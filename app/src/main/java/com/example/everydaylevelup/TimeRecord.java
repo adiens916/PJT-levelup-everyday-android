@@ -1,49 +1,61 @@
 package com.example.everydaylevelup;
 
 public class TimeRecord {
-    int _yesterdayRecord;
-    int _increment;
-    int _incrementUnit;
-    int _todayGoal;
-    int _todayRecord;
-    int _percent;
-    int _edit;
+    private int _yesterdayGoal;
+    private int _increment;
+    private int _incrementUnit;
+    private int _todayGoal;
+    private int _todayRecord;
+    private int _percentage;
+    private int _editAmount;
 
-    boolean _firstSession;
-    boolean _recordingState;
-    int _startTime;
-    int _nowTime;
-    int _duration;
-
+    private int _startAmount;
+    private int _currentAmount;
+    private int _gap;
+    private boolean _recordingState;
 
     TimeRecord() {
-
+        init();
     }
 
     private void init() {
-        _yesterdayRecord = 0;
+        _yesterdayGoal = 0;
         _increment = 0;
         _incrementUnit = -1;
         _todayGoal = 0;
         _todayRecord = 0;
-        _percent = 0;
-        _edit = 0;
+        _percentage = 0;
+        _editAmount = 0;
 
-        _firstSession = true;
+        _startAmount = 0;
+        _currentAmount = 0;
+        _gap = 0;
         _recordingState = false;
-        _startTime = 0;
-        _nowTime = 0;
-        _duration = 0;
     }
 
     /* 어제 달성치가 0인 경우 = 새로 시작 -> 측정해야 함 */
     public boolean isNewSession() {
-        if (_yesterdayRecord == 0) {
+        if (_yesterdayGoal == 0) {
             return true;
         } else {
             return false;
         }
     }
+
+    public boolean isOnRecording() {
+        return _recordingState;
+    }
+
+    public void setStartAmount() {
+
+    }
+
+    public void setCurrentAmount() {
+
+
+    }
+
+
 
     /* 가감치는 일단 -1분씩 줄이기 */
     /* -> 성공실패 여부와 초과미만치에 따라서 가감치 결정 */
@@ -92,4 +104,29 @@ public class TimeRecord {
      * 초과 달성시에는 추가 EXP를 주는 식으로 폭업하는 거지
      * 단, 달성 못 할시에는 포인트를 "깎자"! -> 레벨 감소?
      * 아니면 20% 못 채우면 감소, 20% 이상부터 조금씩 주는 형태로? */
+
+
+    public int getYesterdayGoal() { return _yesterdayGoal; }
+
+    public int getIncrement() { return _increment; }
+
+    public int getIncrementUnit() { return _incrementUnit; }
+
+    public int getTodayGoal() { return _todayGoal; }
+
+    public int getTodayRecord() { return _todayRecord; }
+
+    public int getPercentage() { return _percentage; }
+
+    public int getStartAmount() { return _startAmount; }
+
+    public int getCurrentAmount() { return _currentAmount; }
+
+    public int getGap() { return _gap; }
+
+    public void setTodayRecord(int todayRecord) { _todayRecord = todayRecord; }
+
+    public void setEditAmount(int editAmount) { _editAmount = editAmount; }
+
+    public void setRecordingState(boolean state) { _recordingState = state; }
 }

@@ -47,14 +47,14 @@
         app:layout_constraintTop_toTopOf="@+id/todayRecordAmount" />
 
     <TextView
-        android:id="@+id/percentLabel"
+        android:id="@+id/percentageLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="달성량"
-        app:layout_constraintBottom_toBottomOf="@+id/percentAmount"
+        android:text="달성도"
+        app:layout_constraintBottom_toBottomOf="@+id/percentageAmount"
         app:layout_constraintEnd_toEndOf="@+id/todayRecordLabel"
         app:layout_constraintStart_toStartOf="@+id/todayRecordLabel"
-        app:layout_constraintTop_toTopOf="@+id/percentAmount" />
+        app:layout_constraintTop_toTopOf="@+id/percentageAmount" />
 
     <TextView
         android:id="@+id/yesterdayGoalAmount"
@@ -65,7 +65,7 @@
         android:text="어제 목표"
         app:layout_constraintBottom_toTopOf="@+id/incrementAmount"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/yesterdayGoalLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -76,8 +76,8 @@
         android:gravity="center"
         android:text="증감치"
         app:layout_constraintBottom_toTopOf="@+id/todayGoalAmount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/yesterdayGoalAmount"
+        app:layout_constraintStart_toStartOf="@+id/yesterdayGoalAmount"
         app:layout_constraintTop_toBottomOf="@+id/yesterdayGoalAmount" />
 
     <TextView
@@ -88,8 +88,8 @@
         android:gravity="center"
         android:text="오늘 목표"
         app:layout_constraintBottom_toTopOf="@+id/todayRecordAmount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/incrementAmount"
+        app:layout_constraintStart_toStartOf="@+id/incrementAmount"
         app:layout_constraintTop_toBottomOf="@+id/incrementAmount" />
 
     <TextView
@@ -100,22 +100,22 @@
         android:gravity="center"
         android:text="오늘 달성량"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/todayGoalAmount"
+        app:layout_constraintStart_toStartOf="@+id/todayGoalAmount"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
-        android:id="@+id/percentAmount"
+        android:id="@+id/percentageAmount"
         android:layout_width="80dp"
         android:layout_height="50dp"
         android:layout_marginBottom="32dp"
         android:background="@android:drawable/gallery_thumb"
         android:gravity="center"
         android:text="달성도"
-        app:layout_constraintBottom_toTopOf="@+id/startAmountView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/startCounter"
+        app:layout_constraintEnd_toEndOf="@+id/todayRecordAmount"
+        app:layout_constraintStart_toStartOf="@+id/todayRecordAmount"
         app:layout_constraintTop_toBottomOf="@+id/todayRecordAmount" />
 
     <EditText
@@ -127,48 +127,48 @@
         android:hint="± mm:ss"
         android:inputType="numberSigned|time"
         android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/finishButton"
-        app:layout_constraintEnd_toEndOf="@+id/nowAmountView"
-        app:layout_constraintStart_toStartOf="@+id/nowAmountView"
-        app:layout_constraintTop_toBottomOf="@+id/nowAmountView" />
+        app:layout_constraintBottom_toTopOf="@+id/completeButton"
+        app:layout_constraintEnd_toEndOf="@+id/nowCounter"
+        app:layout_constraintStart_toStartOf="@+id/nowCounter"
+        app:layout_constraintTop_toBottomOf="@+id/nowCounter" />
 
     <TextView
-        android:id="@+id/startViewLabel"
+        android:id="@+id/startCounterLabel"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="시작"
-        app:layout_constraintBottom_toBottomOf="@+id/startAmountView"
-        app:layout_constraintEnd_toStartOf="@+id/startAmountView"
+        android:text="시작 기록"
+        app:layout_constraintBottom_toBottomOf="@+id/startCounter"
+        app:layout_constraintEnd_toStartOf="@+id/startCounter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startAmountView" />
+        app:layout_constraintTop_toTopOf="@+id/startCounter" />
 
     <TextView
-        android:id="@+id/nowViewLabel"
+        android:id="@+id/nowCounterLabel"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="지금까지"
-        app:layout_constraintBottom_toBottomOf="@+id/nowAmountView"
-        app:layout_constraintEnd_toStartOf="@+id/nowAmountView"
+        android:text="현재 기록"
+        app:layout_constraintBottom_toBottomOf="@+id/nowCounter"
+        app:layout_constraintEnd_toStartOf="@+id/nowCounter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nowAmountView" />
+        app:layout_constraintTop_toTopOf="@+id/nowCounter" />
 
     <TextView
-        android:id="@+id/startAmountView"
+        android:id="@+id/startCounter"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@android:drawable/gallery_thumb"
         android:ems="10"
         android:gravity="center"
         android:text="hh:mm:ss"
-        app:layout_constraintBottom_toTopOf="@+id/nowAmountView"
-        app:layout_constraintEnd_toStartOf="@+id/startButton"
-        app:layout_constraintStart_toEndOf="@id/startViewLabel"
-        app:layout_constraintTop_toBottomOf="@+id/percentAmount" />
+        app:layout_constraintBottom_toTopOf="@+id/nowCounter"
+        app:layout_constraintEnd_toStartOf="@+id/frameLayout"
+        app:layout_constraintStart_toEndOf="@id/startCounterLabel"
+        app:layout_constraintTop_toBottomOf="@+id/percentageAmount" />
 
     <TextView
-        android:id="@+id/nowAmountView"
+        android:id="@+id/nowCounter"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@android:drawable/gallery_thumb"
@@ -176,48 +176,73 @@
         android:gravity="center"
         android:text="hh:mm:ss"
         app:layout_constraintBottom_toTopOf="@+id/recordEdit"
-        app:layout_constraintEnd_toStartOf="@+id/stopButton"
-        app:layout_constraintStart_toEndOf="@id/nowViewLabel"
-        app:layout_constraintTop_toBottomOf="@+id/startAmountView" />
+        app:layout_constraintEnd_toStartOf="@+id/recordStopButton"
+        app:layout_constraintStart_toEndOf="@id/nowCounterLabel"
+        app:layout_constraintTop_toBottomOf="@+id/startCounter" />
 
     <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="시작"
-        app:layout_constraintBottom_toBottomOf="@+id/startAmountView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/startAmountView"
-        app:layout_constraintTop_toTopOf="@+id/startAmountView" />
-
-    <Button
-        android:id="@+id/stopButton"
+        android:id="@+id/recordStopButton"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:text="중지"
-        app:layout_constraintBottom_toBottomOf="@+id/nowAmountView"
+        android:text="기록 중지"
+        app:layout_constraintBottom_toBottomOf="@+id/nowCounter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nowAmountView"
-        app:layout_constraintTop_toTopOf="@+id/nowAmountView" />
+        app:layout_constraintStart_toEndOf="@+id/nowCounter"
+        app:layout_constraintTop_toTopOf="@+id/nowCounter" />
 
     <Button
-        android:id="@+id/editButton"
+        android:id="@+id/recordEditButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="달성량 수정"
         app:layout_constraintBottom_toBottomOf="@+id/recordEdit"
-        app:layout_constraintEnd_toEndOf="@+id/stopButton"
-        app:layout_constraintStart_toStartOf="@+id/stopButton"
+        app:layout_constraintEnd_toEndOf="@+id/recordStopButton"
+        app:layout_constraintStart_toStartOf="@+id/recordStopButton"
         app:layout_constraintTop_toTopOf="@+id/recordEdit" />
 
     <Button
-        android:id="@+id/finishButton"
+        android:id="@+id/completeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DAY END"
+        android:text="Call it a day"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recordEdit" />
+
+    <View
+        android:id="@+id/lowerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/startCounter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/percentageAmount" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/startCounter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startCounter"
+        app:layout_constraintTop_toTopOf="@+id/startCounter">
+
+        <Button
+            android:id="@+id/recordCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기록 취소"
+            app:backgroundTint="#F44336" />
+
+        <Button
+            android:id="@+id/recordStartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기록 시작" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/yesterdayGoalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="어제 목표"
+        app:layout_constraintBottom_toBottomOf="@+id/yesterdayGoalAmount"
+        app:layout_constraintEnd_toStartOf="@+id/yesterdayGoalAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/yesterdayGoalAmount" />
+
+    <TextView
+        android:id="@+id/incrementLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="증감치"
+        app:layout_constraintBottom_toBottomOf="@+id/incrementAmount"
+        app:layout_constraintEnd_toStartOf="@+id/incrementAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/incrementAmount" />
+
+    <TextView
+        android:id="@+id/todayGoalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오늘 목표"
+        app:layout_constraintBottom_toBottomOf="@+id/todayGoalAmount"
+        app:layout_constraintEnd_toStartOf="@+id/todayGoalAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/todayGoalAmount" />
+
+    <TextView
+        android:id="@+id/todayRecordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오늘 달성량"
+        app:layout_constraintBottom_toBottomOf="@+id/todayRecordAmount"
+        app:layout_constraintEnd_toStartOf="@+id/todayRecordAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/todayRecordAmount" />
+
+    <TextView
+        android:id="@+id/percentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="달성량"
+        app:layout_constraintBottom_toBottomOf="@+id/percentAmount"
+        app:layout_constraintEnd_toEndOf="@+id/todayRecordLabel"
+        app:layout_constraintStart_toStartOf="@+id/todayRecordLabel"
+        app:layout_constraintTop_toTopOf="@+id/percentAmount" />
+
+    <TextView
+        android:id="@+id/yesterdayGoalAmount"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:text="어제 목표"
+        app:layout_constraintBottom_toTopOf="@+id/incrementAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/incrementAmount"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:text="증감치"
+        app:layout_constraintBottom_toTopOf="@+id/todayGoalAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/yesterdayGoalAmount" />
+
+    <TextView
+        android:id="@+id/todayGoalAmount"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:text="오늘 목표"
+        app:layout_constraintBottom_toTopOf="@+id/todayRecordAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/incrementAmount" />
+
+    <TextView
+        android:id="@+id/todayRecordAmount"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:text="오늘 달성량"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/percentAmount"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="32dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:text="달성도"
+        app:layout_constraintBottom_toTopOf="@+id/startAmountView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todayRecordAmount" />
+
+    <EditText
+        android:id="@+id/recordEdit"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:gravity="center"
+        android:hint="± mm:ss"
+        android:inputType="numberSigned|time"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/finishButton"
+        app:layout_constraintEnd_toEndOf="@+id/nowAmountView"
+        app:layout_constraintStart_toStartOf="@+id/nowAmountView"
+        app:layout_constraintTop_toBottomOf="@+id/nowAmountView" />
+
+    <TextView
+        android:id="@+id/startViewLabel"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="시작"
+        app:layout_constraintBottom_toBottomOf="@+id/startAmountView"
+        app:layout_constraintEnd_toStartOf="@+id/startAmountView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/startAmountView" />
+
+    <TextView
+        android:id="@+id/nowViewLabel"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="지금까지"
+        app:layout_constraintBottom_toBottomOf="@+id/nowAmountView"
+        app:layout_constraintEnd_toStartOf="@+id/nowAmountView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nowAmountView" />
+
+    <TextView
+        android:id="@+id/startAmountView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:ems="10"
+        android:gravity="center"
+        android:text="hh:mm:ss"
+        app:layout_constraintBottom_toTopOf="@+id/nowAmountView"
+        app:layout_constraintEnd_toStartOf="@+id/startButton"
+        app:layout_constraintStart_toEndOf="@id/startViewLabel"
+        app:layout_constraintTop_toBottomOf="@+id/percentAmount" />
+
+    <TextView
+        android:id="@+id/nowAmountView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:drawable/gallery_thumb"
+        android:ems="10"
+        android:gravity="center"
+        android:text="hh:mm:ss"
+        app:layout_constraintBottom_toTopOf="@+id/recordEdit"
+        app:layout_constraintEnd_toStartOf="@+id/stopButton"
+        app:layout_constraintStart_toEndOf="@id/nowViewLabel"
+        app:layout_constraintTop_toBottomOf="@+id/startAmountView" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="시작"
+        app:layout_constraintBottom_toBottomOf="@+id/startAmountView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startAmountView"
+        app:layout_constraintTop_toTopOf="@+id/startAmountView" />
+
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="중지"
+        app:layout_constraintBottom_toBottomOf="@+id/nowAmountView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/nowAmountView"
+        app:layout_constraintTop_toTopOf="@+id/nowAmountView" />
+
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="달성량 수정"
+        app:layout_constraintBottom_toBottomOf="@+id/recordEdit"
+        app:layout_constraintEnd_toEndOf="@+id/stopButton"
+        app:layout_constraintStart_toStartOf="@+id/stopButton"
+        app:layout_constraintTop_toTopOf="@+id/recordEdit" />
+
+    <Button
+        android:id="@+id/finishButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DAY END"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recordEdit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

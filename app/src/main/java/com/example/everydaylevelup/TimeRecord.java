@@ -1,17 +1,17 @@
 package com.example.everydaylevelup;
 
 public class TimeRecord {
-    private int _yesterdayGoal;
-    private int _increment;
-    private int _incrementUnit;
-    private int _todayGoal;
-    private int _todayRecord;
-    private int _percentage;
-    private int _editAmount;
+    private long _yesterdayGoal;
+    private long _increment;
+    private long _incrementUnit;
+    private long _todayGoal;
+    private long _todayRecord;
+    private long _percentage;
+    private long _editAmount;
 
-    private int _startAmount;
-    private int _currentAmount;
-    private int _gap;
+    private long _startAmount;
+    private long _currentAmount;
+    private long _gap;
     private boolean _recordingState;
 
     TimeRecord() {
@@ -50,9 +50,8 @@ public class TimeRecord {
 
     }
 
-    public void setCurrentAmount() {
-
-
+    public void setCurrentAmount(long lastValue) {
+        _currentAmount = lastValue;
     }
 
 
@@ -106,27 +105,27 @@ public class TimeRecord {
      * 아니면 20% 못 채우면 감소, 20% 이상부터 조금씩 주는 형태로? */
 
 
-    public int getYesterdayGoal() { return _yesterdayGoal; }
+    public long getYesterdayGoal() { return _yesterdayGoal; }
 
-    public int getIncrement() { return _increment; }
+    public long getIncrement() { return _increment; }
 
-    public int getIncrementUnit() { return _incrementUnit; }
+    public long getIncrementUnit() { return _incrementUnit; }
 
-    public int getTodayGoal() { return _todayGoal; }
+    public long getTodayGoal() { return _todayGoal; }
 
-    public int getTodayRecord() { return _todayRecord; }
+    public long getTodayRecord() { return _todayRecord; }
 
-    public int getPercentage() { return _percentage; }
+    public long getPercentage() { return _percentage; }
 
-    public int getStartAmount() { return _startAmount; }
+    public long getStartAmount() { return _startAmount; }
 
-    public int getCurrentAmount() { return _currentAmount; }
+    public long getCurrentAmount() { return _currentAmount; }
 
-    public int getGap() { return _gap; }
+    public long getGap() { return _gap; }
 
-    public void setTodayRecord(int todayRecord) { _todayRecord = todayRecord; }
+    public void setTodayRecord(long todayRecord) { _todayRecord = todayRecord; }
 
-    public void setEditAmount(int editAmount) { _editAmount = editAmount; }
+    public void setEditAmount(long editAmount) { _editAmount = editAmount; }
 
     public void setRecordingState(boolean state) { _recordingState = state; }
 }

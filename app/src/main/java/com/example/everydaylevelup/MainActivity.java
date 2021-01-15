@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    // region Variables
+
     TextView _yesterdayGoalAmount;
     TextView _incrementAmount;
     TextView _todayGoalAmount;
@@ -27,9 +29,14 @@ public class MainActivity extends AppCompatActivity {
     Button _recordEditButton;
     Button _completeButton;
 
-    String _fileName = "not-to-do";
-    Thread progressWatcher;
     TimeRecord record;
+    Thread goalTracker;
+    RecorderThread progressTracker;
+    String _fileName = "not-to-do";
+
+    // endregion Variables
+
+    // region onCreate and onDestroy
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,24 +50,24 @@ public class MainActivity extends AppCompatActivity {
 
         /* 뷰에 보여주기 */
 //        showGoalAndIncrement();
-//        showTodayRecord();
-//        showCurrentRecord();
+        showTodayRecord();
+        showCurrentRecord();
         changeButtonByState();
 
         /* 버튼 리스너 설정 */
         setStartButtonListener();
         setCancelButtonListener();
-//        setStopButtonListener();
+        setStopButtonListener();
 //        setEditButtonListener();
 //        setCompleteButtonListener();
 
-        /* 측정 스레드 시작? */
-        // progressWatcher = new Thread();
-        // progressWatcher.start();
+        /* 목표 달성 시 알림 기능 */
+        goalTracker = new Thread();
+        goalTracker.start();
 
         /* 위젯으로 시작, 정지 */
-        /* 목표 달성 시 알림 기능 */
         /* 상단바 기능 */
+        /* amount 대신에 value 로 명칭 변경 */
     }
 
     @Override
@@ -71,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
         // progressWatcher.interrupt();
     }
+
+    // endregion onCreate and onDestroy
+
+    // region Initialization
 
     private void findViews() {
         _yesterdayGoalAmount = findViewById(R.id.yesterdayGoalAmount);
@@ -115,22 +126,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /* 뷰 */
+    // endregion initialization
+
+    // region View
 
     private void showGoalAndIncrement() {
-        _yesterdayGoalAmount.setText(record.getYesterdayGoal());
-        _incrementAmount.setText(record.getIncrement());
-        _todayGoalAmount.setText(record.getTodayGoal());
+        _yesterdayGoalAmount.setText(String.valueOf(record.getYesterdayGoal()));
+        _incrementAmount.setText(String.valueOf(record.getIncrement()));
+        _todayGoalAmount.setText(String.valueOf(record.getTodayGoal()));
     }
 
     private void showTodayRecord() {
-        _todayRecordAmount.setText(record.getTodayRecord());
-        _percentageAmount.setText(record.getPercentage());
+        _todayRecordAmount.setText(String.valueOf(record.getTodayRecord()));
+        _percentageAmount.setText(String.valueOf(record.getPercentage()));
     }
 
     private void showCurrentRecord() {
-        _startCounter.setText(record.getStartAmount());
-        _nowCounter.setText(record.getCurrentAmount());
+        _startCounter.setText(String.valueOf(record.getStartAmount()));
+        _nowCounter.setText(String.valueOf(record.getCurrentAmount()));
     }
 
     /* 기록 상태에 따라 버튼 변경 */
@@ -155,21 +168,25 @@ public class MainActivity extends AppCompatActivity {
         _recordCancelButton.setVisibility(View.VISIBLE);
     }
 
-    /* 컨트롤러 */
+    // endregion View
+
+    // region Controller
 
     private void setStartButtonListener() {
         _recordStartButton.setOnClickListener(v -> {
-            // record.setStartAmount();
+//            record.saveStartValue();
             record.setRecordingState(true);
+            // 스레드 시작
+            progressTracker = new RecorderThread(record, _nowCounter);
+            progressTracker.start();
             showCancelButton();
-            // thread.start?
         });
     }
 
     private void setCancelButtonListener() {
         _recordCancelButton.setOnClickListener(v -> {
             // 재확인 알림창 띄우기
-
+            progressTracker.setRecordingState(false);
             record.setRecordingState(false);
             showStartButton();
         });
@@ -194,5 +211,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    // endregion Controller
 }

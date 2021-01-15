@@ -31,7 +31,7 @@ public class RecorderThread extends Thread {
                 // 현재 시간 얻어오고, 저장
                 calendar = Calendar.getInstance();
                 long lastTime = calendar.getTimeInMillis();
-                record.setCurrentAmount(lastTime);
+                record.setLastValue(lastTime);
 
                 // 현재 시간을 출력
                 String lastTimeString = timeFormat.format(lastTime);

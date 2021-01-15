@@ -9,27 +9,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     // region Variables
 
-    TextView _yesterdayGoalAmount;
-    TextView _incrementAmount;
-    TextView _todayGoalAmount;
-    TextView _todayRecordAmount;
-    TextView _percentageAmount;
+    TextView yesterdayGoalAmount;
+    TextView incrementAmount;
+    TextView todayGoalAmount;
+    TextView todayRecordAmount;
+    TextView percentageAmount;
 
-    TextView _startCounter;
-    TextView _nowCounter;
-    EditText _recordEditAmount;
+    TextView startCounter;
+    TextView lastCounter;
+    EditText recordEditAmount;
 
-    Button _recordStartButton;
-    Button _recordCancelButton;
-    Button _recordStopButton;
-    Button _recordEditButton;
-    Button _completeButton;
+    Button recordStartButton;
+    Button recordCancelButton;
+    Button recordStopButton;
+    Button recordEditButton;
+    Button completeButton;
 
     TimeRecord record;
+    Calendar calendar;
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.KOREA);
     Thread goalTracker;
     RecorderThread progressTracker;
     String _fileName = "not-to-do";
@@ -84,28 +90,28 @@ public class MainActivity extends AppCompatActivity {
     // region Initialization
 
     private void findViews() {
-        _yesterdayGoalAmount = findViewById(R.id.yesterdayGoalAmount);
-        _incrementAmount = findViewById(R.id.incrementAmount);
-        _todayGoalAmount = findViewById(R.id.todayGoalAmount);
-        _todayRecordAmount = findViewById(R.id.todayRecordAmount);
-        _percentageAmount = findViewById(R.id.percentageAmount);
+        yesterdayGoalAmount = findViewById(R.id.yesterdayGoalAmount);
+        incrementAmount = findViewById(R.id.incrementAmount);
+        todayGoalAmount = findViewById(R.id.todayGoalAmount);
+        todayRecordAmount = findViewById(R.id.todayRecordAmount);
+        percentageAmount = findViewById(R.id.percentageAmount);
 
-        _startCounter = findViewById(R.id.startCounter);
-        _nowCounter = findViewById(R.id.nowCounter);
-        _recordEditAmount = findViewById(R.id.recordEdit);
+        startCounter = findViewById(R.id.startCounter);
+        lastCounter = findViewById(R.id.nowCounter);
+        recordEditAmount = findViewById(R.id.recordEdit);
 
-        _recordStartButton = findViewById(R.id.recordStartButton);
-        _recordCancelButton = findViewById(R.id.recordCancelButton);
-        _recordStopButton = findViewById(R.id.recordStopButton);
-        _recordEditButton = findViewById(R.id.recordEditButton);
-        _completeButton = findViewById(R.id.completeButton);
+        recordStartButton = findViewById(R.id.recordStartButton);
+        recordCancelButton = findViewById(R.id.recordCancelButton);
+        recordStopButton = findViewById(R.id.recordStopButton);
+        recordEditButton = findViewById(R.id.recordEditButton);
+        completeButton = findViewById(R.id.completeButton);
     }
 
     private void saveData() {
         SharedPreferences sharedPref = getSharedPreferences(_fileName, 0);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        String startTime = _recordStartButton.getText().toString();
+        String startTime = recordStartButton.getText().toString();
         editor.putString("startTime", startTime);
 
         // 저장
@@ -131,19 +137,19 @@ public class MainActivity extends AppCompatActivity {
     // region View
 
     private void showGoalAndIncrement() {
-        _yesterdayGoalAmount.setText(String.valueOf(record.getYesterdayGoal()));
-        _incrementAmount.setText(String.valueOf(record.getIncrement()));
-        _todayGoalAmount.setText(String.valueOf(record.getTodayGoal()));
+        yesterdayGoalAmount.setText(String.valueOf(record.getYesterdayGoal()));
+        incrementAmount.setText(String.valueOf(record.getIncrement()));
+        todayGoalAmount.setText(String.valueOf(record.getTodayGoal()));
     }
 
     private void showTodayRecord() {
-        _todayRecordAmount.setText(String.valueOf(record.getTodayRecord()));
-        _percentageAmount.setText(String.valueOf(record.getPercentage()));
+        todayRecordAmount.setText(String.valueOf(record.getTodayRecord()));
+        percentageAmount.setText(String.valueOf(record.getPercentage()));
     }
 
     private void showCurrentRecord() {
-        _startCounter.setText(String.valueOf(record.getStartAmount()));
-        _nowCounter.setText(String.valueOf(record.getCurrentAmount()));
+        startCounter.setText(String.valueOf(record.getStartValue()));
+        lastCounter.setText(String.valueOf(record.getLastValue()));
     }
 
     /* 기록 상태에 따라 버튼 변경 */
@@ -158,14 +164,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void showStartButton() {
         // 기록 상태가 아니면 시작 버튼 보이기
-        _recordStartButton.setVisibility(View.VISIBLE);
-        _recordCancelButton.setVisibility(View.INVISIBLE);
+        recordStartButton.setVisibility(View.VISIBLE);
+        recordCancelButton.setVisibility(View.INVISIBLE);
     }
 
     private void showCancelButton() {
         // 기록 상태인 경우 시작 버튼 대신 취소 버튼 보이기
-        _recordStartButton.setVisibility(View.INVISIBLE);
-        _recordCancelButton.setVisibility(View.VISIBLE);
+        recordStartButton.setVisibility(View.INVISIBLE);
+        recordCancelButton.setVisibility(View.VISIBLE);
     }
 
     // endregion View
@@ -173,40 +179,58 @@ public class MainActivity extends AppCompatActivity {
     // region Controller
 
     private void setStartButtonListener() {
-        _recordStartButton.setOnClickListener(v -> {
-//            record.saveStartValue();
-            record.setRecordingState(true);
+        recordStartButton.setOnClickListener(v -> {
+            long startTime = Calendar.getInstance().getTimeInMillis();
+            record.setStartValue(startTime);
+            String startTimeString = timeFormat.format(startTime);
+            startCounter.setText(startTimeString);
+
             // 스레드 시작
-            progressTracker = new RecorderThread(record, _nowCounter);
+            progressTracker = new RecorderThread(record, lastCounter);
             progressTracker.start();
             showCancelButton();
         });
     }
 
     private void setCancelButtonListener() {
-        _recordCancelButton.setOnClickListener(v -> {
+        recordCancelButton.setOnClickListener(v -> {
             // 재확인 알림창 띄우기
             progressTracker.setRecordingState(false);
-            record.setRecordingState(false);
+
+            startCounter.setText("0");
+            lastCounter.setText("0");
             showStartButton();
         });
     }
 
     private void setStopButtonListener() {
-        _recordStopButton.setOnClickListener(v -> {
+        recordStopButton.setOnClickListener(v -> {
+            if (progressTracker == null) {
+                return;
+            }
 
+            progressTracker.setRecordingState(false);
+            progressTracker = null;
+
+            record.calcDifference();
+            String todayRecordString = timeFormat.format(record.getTodayRecord());
+            todayRecordAmount.setText(todayRecordString);
+
+            startCounter.setText("0");
+            lastCounter.setText("0");
+            showStartButton();
         });
     }
 
     private void setEditButtonListener() {
-        _recordEditButton.setOnClickListener(v -> {
-            String editAmount = _recordEditAmount.getText().toString();
+        recordEditButton.setOnClickListener(v -> {
+            String editAmount = recordEditAmount.getText().toString();
             record.setEditAmount(Integer.parseInt(editAmount));
         });
     }
 
     private void setCompleteButtonListener() {
-        _completeButton.setOnClickListener(v -> {
+        completeButton.setOnClickListener(v -> {
 
         });
     }

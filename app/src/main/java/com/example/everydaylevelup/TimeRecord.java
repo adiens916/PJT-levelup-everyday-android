@@ -1,41 +1,41 @@
 package com.example.everydaylevelup;
 
 public class TimeRecord {
-    private long _yesterdayGoal;
-    private long _increment;
-    private long _incrementUnit;
-    private long _todayGoal;
-    private long _todayRecord;
-    private long _percentage;
-    private long _editAmount;
+    private long yesterdayGoal;
+    private long increment;
+    private long incrementUnit;
+    private long todayGoal;
+    private long todayRecord;
+    private long percentage;
+    private long editAmount;
 
-    private long _startAmount;
-    private long _currentAmount;
-    private long _gap;
-    private boolean _recordingState;
+    private long startValue;
+    private long lastValue;
+    private long difference;
+    private boolean recordingState;
 
     TimeRecord() {
         init();
     }
 
     private void init() {
-        _yesterdayGoal = 0;
-        _increment = 0;
-        _incrementUnit = -1;
-        _todayGoal = 0;
-        _todayRecord = 0;
-        _percentage = 0;
-        _editAmount = 0;
+        yesterdayGoal = 0;
+        increment = 0;
+        incrementUnit = -1;
+        todayGoal = 0;
+        todayRecord = 0;
+        percentage = 0;
+        editAmount = 0;
 
-        _startAmount = 0;
-        _currentAmount = 0;
-        _gap = 0;
-        _recordingState = false;
+        startValue = 0;
+        lastValue = 0;
+        difference = 0;
+        recordingState = false;
     }
 
     /* 어제 달성치가 0인 경우 = 새로 시작 -> 측정해야 함 */
     public boolean isNewSession() {
-        if (_yesterdayGoal == 0) {
+        if (yesterdayGoal == 0) {
             return true;
         } else {
             return false;
@@ -43,18 +43,13 @@ public class TimeRecord {
     }
 
     public boolean isOnRecording() {
-        return _recordingState;
+        return recordingState;
     }
 
-    public void setStartAmount() {
-
+    public void calcDifference() {
+        difference = lastValue - startValue;
+        todayRecord += difference;
     }
-
-    public void setCurrentAmount(long lastValue) {
-        _currentAmount = lastValue;
-    }
-
-
 
     /* 가감치는 일단 -1분씩 줄이기 */
     /* -> 성공실패 여부와 초과미만치에 따라서 가감치 결정 */
@@ -105,27 +100,33 @@ public class TimeRecord {
      * 아니면 20% 못 채우면 감소, 20% 이상부터 조금씩 주는 형태로? */
 
 
-    public long getYesterdayGoal() { return _yesterdayGoal; }
+    public long getYesterdayGoal() { return yesterdayGoal; }
 
-    public long getIncrement() { return _increment; }
+    public long getIncrement() { return increment; }
 
-    public long getIncrementUnit() { return _incrementUnit; }
+    public long getIncrementUnit() { return incrementUnit; }
 
-    public long getTodayGoal() { return _todayGoal; }
+    public long getTodayGoal() { return todayGoal; }
 
-    public long getTodayRecord() { return _todayRecord; }
+    public long getTodayRecord() { return todayRecord; }
 
-    public long getPercentage() { return _percentage; }
+    public long getPercentage() { return percentage; }
 
-    public long getStartAmount() { return _startAmount; }
+    public long getStartValue() { return startValue; }
 
-    public long getCurrentAmount() { return _currentAmount; }
+    public long getLastValue() { return lastValue; }
 
-    public long getGap() { return _gap; }
+    public long getDifference() { return difference; }
 
-    public void setTodayRecord(long todayRecord) { _todayRecord = todayRecord; }
+    public void setTodayRecord(long todayRecord) { this.todayRecord = todayRecord; }
 
-    public void setEditAmount(long editAmount) { _editAmount = editAmount; }
+    public void setStartValue(long startValue) { this.startValue = startValue; }
 
-    public void setRecordingState(boolean state) { _recordingState = state; }
+    public void setLastValue(long lastValue) { this.lastValue = lastValue; }
+
+    public void setEditAmount(long editAmount) { this.editAmount = editAmount; }
+
+    public void setRecordingState(boolean state) { recordingState = state; }
+
+
 }

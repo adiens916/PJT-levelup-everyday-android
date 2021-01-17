@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.everydaylevelup.model.RecordingState;
+import com.example.everydaylevelup.model.TimeRecord;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -23,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     TextView todayRecordAmount;
     TextView percentageAmount;
 
-    TextView startCounter;
-    TextView lastCounter;
+    TextView startTimeCounter;
+    TextView lastTimeCounter;
     EditText recordEditAmount;
 
     Button recordStartButton;
@@ -34,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     Button completeButton;
 
     TimeRecord record;
-    Calendar calendar;
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.KOREA);
     Thread goalTracker;
     RecorderThread progressTracker;
@@ -96,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
         todayRecordAmount = findViewById(R.id.todayRecordAmount);
         percentageAmount = findViewById(R.id.percentageAmount);
 
-        startCounter = findViewById(R.id.startCounter);
-        lastCounter = findViewById(R.id.nowCounter);
+        startTimeCounter = findViewById(R.id.startCounter);
+        lastTimeCounter = findViewById(R.id.nowCounter);
         recordEditAmount = findViewById(R.id.recordEdit);
 
         recordStartButton = findViewById(R.id.recordStartButton);
@@ -148,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCurrentRecord() {
-        startCounter.setText(String.valueOf(record.getStartValue()));
-        lastCounter.setText(String.valueOf(record.getLastValue()));
+        startTimeCounter.setText(String.valueOf(record.getStartValue()));
+        lastTimeCounter.setText(String.valueOf(record.getLastValue()));
     }
 
     /* 기록 상태에 따라 버튼 변경 */
@@ -180,14 +182,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setStartButtonListener() {
         recordStartButton.setOnClickListener(v -> {
-            long startTime = Calendar.getInstance().getTimeInMillis();
-            record.setStartValue(startTime);
-            String startTimeString = timeFormat.format(startTime);
-            startCounter.setText(startTimeString);
-
-            // 스레드 시작
-            progressTracker = new RecorderThread(record, lastCounter);
+            // 측정 스레드 시작
+            progressTracker = new RecorderThread(this);
             progressTracker.start();
+            record.setRecordingState(true);
             showCancelButton();
         });
     }
@@ -195,31 +193,28 @@ public class MainActivity extends AppCompatActivity {
     private void setCancelButtonListener() {
         recordCancelButton.setOnClickListener(v -> {
             // 재확인 알림창 띄우기
-            progressTracker.setRecordingState(false);
-
-            startCounter.setText("0");
-            lastCounter.setText("0");
-            showStartButton();
+            postProcessByState(null);
         });
     }
 
     private void setStopButtonListener() {
         recordStopButton.setOnClickListener(v -> {
-            if (progressTracker == null) {
-                return;
-            }
-
-            progressTracker.setRecordingState(false);
-            progressTracker = null;
-
-            record.calcDifference();
-            String todayRecordString = timeFormat.format(record.getTodayRecord());
-            todayRecordAmount.setText(todayRecordString);
-
-            startCounter.setText("0");
-            lastCounter.setText("0");
-            showStartButton();
+            postProcessByState(RecordingState.OFF);
         });
+    }
+
+    private void postProcessByState(RecordingState state) {
+        // 측정 스레드 없을 때의 오류 방지
+        if (progressTracker == null) {
+            return;
+        }
+
+        // 스레드 종료
+        progressTracker.setRecordingState(state);
+        progressTracker.interrupt();
+        progressTracker = null;
+        record.setRecordingState(false);
+        showStartButton();
     }
 
     private void setEditButtonListener() {

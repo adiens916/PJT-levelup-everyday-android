@@ -1,4 +1,4 @@
-package com.example.everydaylevelup;
+package com.example.everydaylevelup.model;
 
 abstract public class AbstractRecord {
     /*

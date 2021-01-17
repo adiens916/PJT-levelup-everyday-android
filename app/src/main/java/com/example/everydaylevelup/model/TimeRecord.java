@@ -1,4 +1,4 @@
-package com.example.everydaylevelup;
+package com.example.everydaylevelup.model;
 
 public class TimeRecord {
     private long yesterdayGoal;
@@ -14,7 +14,7 @@ public class TimeRecord {
     private long difference;
     private boolean recordingState;
 
-    TimeRecord() {
+    public TimeRecord() {
         init();
     }
 
@@ -46,8 +46,12 @@ public class TimeRecord {
         return recordingState;
     }
 
-    public void calcDifference() {
+    public long calcDifference() {
         difference = lastValue - startValue;
+        return difference;
+    }
+
+    public void addDifferenceToTodayRecord() {
         todayRecord += difference;
     }
 

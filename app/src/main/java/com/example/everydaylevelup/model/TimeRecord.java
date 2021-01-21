@@ -21,7 +21,7 @@ public class TimeRecord {
     private void init() {
         yesterdayGoal = 0;
         increment = 0;
-        incrementUnit = -1;
+        incrementUnit = 1000;
         todayGoal = 0;
         todayRecord = 0;
         percentage = 0;

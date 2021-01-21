@@ -13,16 +13,15 @@ import com.example.everydaylevelup.model.RecordingState;
 import com.example.everydaylevelup.model.TimeRecord;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     // region Variables
 
-    TextView yesterdayGoalAmount;
-    TextView incrementAmount;
-    TextView todayGoalAmount;
+    TextView yesterdayGoalViewer;
+    TextView incrementViewer;
+    TextView todayGoalViewer;
     TextView todayRecordAmount;
     TextView percentageAmount;
 
@@ -57,17 +56,18 @@ public class MainActivity extends AppCompatActivity {
         checkNewSession();
 
         /* 뷰에 보여주기 */
-//        showGoalAndIncrement();
+        showGoalAndIncrement();
         showTodayRecord();
-        showCurrentRecord();
+        showStartTime();
+        showLastTime();
         changeButtonByState();
 
         /* 버튼 리스너 설정 */
         setStartButtonListener();
         setCancelButtonListener();
         setStopButtonListener();
-//        setEditButtonListener();
-//        setCompleteButtonListener();
+        setEditButtonListener();
+        setCompleteButtonListener();
 
         /* 목표 달성 시 알림 기능 */
         goalTracker = new Thread();
@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
     // region Initialization
 
     private void findViews() {
-        yesterdayGoalAmount = findViewById(R.id.yesterdayGoalAmount);
-        incrementAmount = findViewById(R.id.incrementAmount);
-        todayGoalAmount = findViewById(R.id.todayGoalAmount);
-        todayRecordAmount = findViewById(R.id.todayRecordAmount);
-        percentageAmount = findViewById(R.id.percentageAmount);
+        yesterdayGoalViewer = findViewById(R.id.yesterdayGoalViewer);
+        incrementViewer = findViewById(R.id.incrementViewer);
+        todayGoalViewer = findViewById(R.id.todayGoalViewer);
+        todayRecordAmount = findViewById(R.id.todayRecordViewer);
+        percentageAmount = findViewById(R.id.percentageViewer);
 
         startTimeCounter = findViewById(R.id.startCounter);
         lastTimeCounter = findViewById(R.id.nowCounter);
@@ -139,9 +139,12 @@ public class MainActivity extends AppCompatActivity {
     // region View - Text
 
     private void showGoalAndIncrement() {
-        yesterdayGoalAmount.setText(String.valueOf(record.getYesterdayGoal()));
-        incrementAmount.setText(String.valueOf(record.getIncrement()));
-        todayGoalAmount.setText(String.valueOf(record.getTodayGoal()));
+        long yesterdayGoal = record.getYesterdayGoal();
+        yesterdayGoalViewer.setText(literalAsHMS(yesterdayGoal));
+        long increment = record.getIncrement();
+        incrementViewer.setText(literalAsHMS(increment));
+        long todayGoal = record.getTodayGoal();
+        todayGoalViewer.setText(literalAsHMS(todayGoal));
     }
 
     public void showTodayRecord() {
@@ -151,9 +154,14 @@ public class MainActivity extends AppCompatActivity {
         percentageAmount.setText(String.valueOf(percentage));
     }
 
-    private void showCurrentRecord() {
-        startTimeCounter.setText(String.valueOf(record.getStartValue()));
-        lastTimeCounter.setText(String.valueOf(record.getLastValue()));
+    public void showStartTime() {
+        long startTime = record.getStartValue();
+        startTimeCounter.setText(literalAsHMS(startTime));
+    }
+
+    public void showLastTime() {
+        long lastTime = record.getLastValue();
+        lastTimeCounter.setText(literalAsHMS(lastTime));
     }
 
     private void setCounterAsZero() {

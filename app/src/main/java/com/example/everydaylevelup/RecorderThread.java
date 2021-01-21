@@ -9,16 +9,11 @@ import java.util.Locale;
 public class RecorderThread extends Thread {
     MainActivity main;
     RecordingState onRecording;
-    SimpleDateFormat timeFormat;
-    long startTime;
     long lastTime;
-    long difference;
-    long extraTodayRecord;
 
     RecorderThread(MainActivity main) {
         this.main = main;
         onRecording = RecordingState.ON;
-        timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
     }
 
     public void setRecordingState(RecordingState state) {
@@ -32,11 +27,13 @@ public class RecorderThread extends Thread {
             onRecording = RecordingState.ON;
         } else {
             saveStartValue();
+            main.showStartTime();
         }
 
         while (onRecording == RecordingState.ON) {
             try {
                 saveLastValue();
+                main.showLastTime();
                 saveDifference();
                 main.showTodayRecord();
                 // 1초마다 반복
@@ -54,25 +51,18 @@ public class RecorderThread extends Thread {
 
     private void saveStartValue() {
         // 현재 시간 얻어오기
-        startTime = Calendar.getInstance().getTimeInMillis();
+        long startTime = Calendar.getInstance().getTimeInMillis();
         // 현재 시간 저장
         main.record.setStartValue(startTime);
-        // 현재 시간 출력
-        main.startTimeCounter.setText(literalAsHMS(startTime));
     }
 
     private void saveLastValue() {
         lastTime = Calendar.getInstance().getTimeInMillis();
         main.record.setLastValue(lastTime);
-        main.lastTimeCounter.setText(literalAsHMS(lastTime));
     }
 
     private void saveDifference() {
         main.record.calcDifference();
-    }
-
-    private String literalAsHMS(long dateTime) {
-        return timeFormat.format(dateTime);
     }
 }
 

@@ -18,7 +18,7 @@ public class RecorderThread extends Thread {
     RecorderThread(MainActivity main) {
         this.main = main;
         onRecording = RecordingState.ON;
-        timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.KOREA);
+        timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
     }
 
     public void setRecordingState(RecordingState state) {

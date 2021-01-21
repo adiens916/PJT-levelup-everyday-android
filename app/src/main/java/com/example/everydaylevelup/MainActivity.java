@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Button completeButton;
 
     TimeRecord record;
-    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.KOREA);
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
     Thread goalTracker;
     RecorderThread progressTracker;
     String _fileName = "not-to-do";

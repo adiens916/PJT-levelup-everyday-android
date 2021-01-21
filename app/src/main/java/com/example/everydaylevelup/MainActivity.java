@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     // endregion initialization
 
-    // region View
+    // region View - Text
 
     private void showGoalAndIncrement() {
         yesterdayGoalAmount.setText(String.valueOf(record.getYesterdayGoal()));
@@ -144,15 +144,30 @@ public class MainActivity extends AppCompatActivity {
         todayGoalAmount.setText(String.valueOf(record.getTodayGoal()));
     }
 
-    private void showTodayRecord() {
-        todayRecordAmount.setText(String.valueOf(record.getTodayRecord()));
-        percentageAmount.setText(String.valueOf(record.getPercentage()));
+    public void showTodayRecord() {
+        long todayRecordWithDifference = record.getTodayRecord() + record.getDifference();
+        todayRecordAmount.setText(String.valueOf(literalAsHMS(todayRecordWithDifference)));
+        long percentage = record.getPercentage();
+        percentageAmount.setText(String.valueOf(percentage));
     }
 
     private void showCurrentRecord() {
         startTimeCounter.setText(String.valueOf(record.getStartValue()));
         lastTimeCounter.setText(String.valueOf(record.getLastValue()));
     }
+
+    private void setCounterAsZero() {
+        startTimeCounter.setText("0");
+        lastTimeCounter.setText("0");
+    }
+
+    private String literalAsHMS(long dateTime) {
+        return timeFormat.format(dateTime);
+    }
+
+    // endregion View - Text
+
+    // region View - Button
 
     /* 기록 상태에 따라 버튼 변경 */
     private void changeButtonByState() {
@@ -176,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         recordCancelButton.setVisibility(View.VISIBLE);
     }
 
-    // endregion View
+    // endregion View - Button
 
     // region Controller
 
@@ -215,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
         progressTracker = null;
         record.setRecordingState(false);
         showStartButton();
+        showTodayRecord();
+        setCounterAsZero();
     }
 
     private void setEditButtonListener() {

@@ -46,9 +46,12 @@ public class TimeRecord {
         return recordingState;
     }
 
-    public long calcDifference() {
+    public void initDifference() {
+        difference = 0;
+    }
+
+    public void calcDifference() {
         difference = lastValue - startValue;
-        return difference;
     }
 
     public void addDifferenceToTodayRecord() {

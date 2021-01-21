@@ -38,6 +38,7 @@ public class RecorderThread extends Thread {
             try {
                 saveLastValue();
                 saveDifference();
+                main.showTodayRecord();
                 // 1초마다 반복
                 sleep(1000);
             } catch (InterruptedException e) {
@@ -48,8 +49,7 @@ public class RecorderThread extends Thread {
         if (onRecording == RecordingState.OFF) {
             main.record.addDifferenceToTodayRecord();
         }
-        showTodayRecord();
-        setCounterAsZero();
+        main.record.initDifference();
     }
 
     private void saveStartValue() {
@@ -68,19 +68,7 @@ public class RecorderThread extends Thread {
     }
 
     private void saveDifference() {
-        difference = main.record.calcDifference();
-        extraTodayRecord = difference + main.record.getTodayRecord();
-        main.todayRecordAmount.setText(literalAsHMS(extraTodayRecord));
-    }
-
-    private void showTodayRecord() {
-        long todayRecord = main.record.getTodayRecord();
-        main.todayRecordAmount.setText(literalAsHMS(todayRecord));
-    }
-
-    private void setCounterAsZero() {
-        main.startTimeCounter.setText("0");
-        main.lastTimeCounter.setText("0");
+        main.record.calcDifference();
     }
 
     private String literalAsHMS(long dateTime) {

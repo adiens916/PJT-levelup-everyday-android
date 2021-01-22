@@ -3,10 +3,10 @@ package com.example.everydaylevelup.model;
 public class TimeRecord {
     private long yesterdayGoal;
     private long increment;
-    private long incrementUnit;
+    private final long incrementUnit;
     private long todayGoal;
     private long todayRecord;
-    private long percentage;
+    private double todayPercentage;
     private long editAmount;
 
     private long startValue;
@@ -14,32 +14,39 @@ public class TimeRecord {
     private long difference;
     private boolean recordingState;
 
-    public TimeRecord() {
-        init();
-    }
+    private long beforeYesterdayRecord;
+    private long yesterdayRecord;
+    private long tomorrowGoal;
+    private double beforeYesterdayPercentage;
+    private double yesterdayPercentage;
+    private final double weight;
+    private final double standard;
 
-    private void init() {
-        yesterdayGoal = 0;
-        increment = 0;
-        incrementUnit = 1000;
+    public TimeRecord() {
+        yesterdayGoal = 1000 * 60 * 60 * 3;
+        increment = 1000 * 60;
+        incrementUnit = 1000 * 5;
         todayGoal = 0;
         todayRecord = 0;
-        percentage = 0;
+        todayPercentage = 0.0;
         editAmount = 0;
 
         startValue = 0;
         lastValue = 0;
         difference = 0;
         recordingState = false;
+
+        beforeYesterdayRecord = 0;
+        yesterdayRecord = 0;
+        beforeYesterdayPercentage = 0.0;
+        yesterdayPercentage = 0.0;
+        weight = 0.7;
+        standard = 120;
     }
 
     /* 어제 달성치가 0인 경우 = 새로 시작 -> 측정해야 함 */
     public boolean isNewSession() {
-        if (yesterdayGoal == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return yesterdayGoal == 0;
     }
 
     public boolean isOnRecording() {
@@ -56,6 +63,60 @@ public class TimeRecord {
 
     public void addDifferenceToTodayRecord() {
         todayRecord += difference;
+    }
+
+    public void updateGoal() {
+        if (isTripleSuccess() || isDoubleFailure()) {
+            tomorrowGoal = getWeightedAverage();
+            shiftRecords();
+            increment = todayGoal - yesterdayGoal;
+        } else {
+            increment = getIncrementBySuccess();
+            tomorrowGoal = todayGoal + increment;
+            shiftRecords();
+        }
+    }
+
+    private boolean isTripleSuccess() {
+        return beforeYesterdayPercentage >= standard &&
+                yesterdayPercentage >= standard &&
+                todayPercentage >= standard;
+    }
+
+    private boolean isDoubleFailure() {
+        return yesterdayPercentage < 100 && todayPercentage < 100;
+    }
+
+    private long getWeightedAverage() {
+        double prevAverage;
+        if (isTripleSuccess()) {
+            prevAverage = weight * yesterdayRecord + (1 - weight) * beforeYesterdayRecord;
+        } else {
+            prevAverage = yesterdayRecord;
+        }
+        double average = weight * todayRecord + (1 - weight) * prevAverage;
+        return (long)average;
+    }
+
+    private long getIncrementBySuccess() {
+        if (todayPercentage >= 100) {
+            return incrementUnit;
+        } else {
+            return -incrementUnit;
+        }
+    }
+
+    private void shiftRecords() {
+        beforeYesterdayRecord = yesterdayRecord;
+        yesterdayRecord = todayRecord;
+        todayRecord = 0;
+
+        beforeYesterdayPercentage = yesterdayPercentage;
+        yesterdayPercentage = todayPercentage;
+        todayPercentage = 0.0;
+
+        yesterdayGoal = todayGoal;
+        todayGoal = tomorrowGoal;
     }
 
     /* 가감치는 일단 -1분씩 줄이기 */
@@ -113,11 +174,21 @@ public class TimeRecord {
 
     public long getIncrementUnit() { return incrementUnit; }
 
-    public long getTodayGoal() { return todayGoal; }
+    public long getTodayGoal() {
+        todayGoal = yesterdayGoal + increment;
+        return todayGoal;
+    }
 
     public long getTodayRecord() { return todayRecord; }
 
-    public long getPercentage() { return percentage; }
+    public double getTodayPercentage() {
+        if (todayGoal != 0) {
+            todayPercentage = (double)(todayRecord + difference) / todayGoal * 100;
+            return todayPercentage;
+        } else {
+            return 0;
+        }
+    }
 
     public long getStartValue() { return startValue; }
 

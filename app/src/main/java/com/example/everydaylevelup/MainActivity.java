@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         long yesterdayGoal = record.getYesterdayGoal();
         yesterdayGoalViewer.setText(literalAsHMS(yesterdayGoal));
         long increment = record.getIncrement();
-        incrementViewer.setText(literalAsHMS(increment));
+        incrementViewer.setText(literalAsSignedHMS(increment));
         long todayGoal = record.getTodayGoal();
         todayGoalViewer.setText(literalAsHMS(todayGoal));
     }
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     public void showTodayRecord() {
         long todayRecordWithDifference = record.getTodayRecord() + record.getDifference();
         todayRecordAmount.setText(String.valueOf(literalAsHMS(todayRecordWithDifference)));
-        long percentage = record.getPercentage();
+        double percentage = Math.round(record.getTodayPercentage());
         percentageAmount.setText(String.valueOf(percentage));
     }
 
@@ -171,6 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String literalAsHMS(long dateTime) {
         return timeFormat.format(dateTime);
+    }
+
+    private String literalAsSignedHMS(long increment) {
+        if (increment < 0) {
+            return "-" + literalAsHMS(Math.abs(increment));
+        } else {
+            return literalAsHMS(increment);
+        }
     }
 
     // endregion View - Text
@@ -231,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
         if (progressTracker == null) {
             return;
         }
-
         // 스레드 종료
         progressTracker.setRecordingState(state);
         progressTracker.interrupt();
@@ -251,7 +258,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCompleteButtonListener() {
         completeButton.setOnClickListener(v -> {
-
+            record.updateGoal();
+            showGoalAndIncrement();
+            showTodayRecord();
         });
     }
 

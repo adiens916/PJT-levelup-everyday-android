@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         setEditButtonListener();
         setCompleteButtonListener();
 
-        /* 목표 달성 시 알림 기능 */
+        /* 목표 도달 시 알림(notification) */
+        /* 만약 개수를 카운팅하는 경우엔, 목표 달성하자마자 바로 축하 메시지 */
         goalTracker = new Thread();
         goalTracker.start();
 
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCancelButtonListener() {
         recordCancelButton.setOnClickListener(v -> {
-            // 재확인 알림창 띄우기
+            // 재확인 알림창 띄우기 -> 예/아니오 알림 대화상자 처리
             postProcessByState(null);
         });
     }
@@ -246,9 +247,11 @@ public class MainActivity extends AppCompatActivity {
         record.setRecordingState(false);
         showStartButton();
         showTodayRecord();
+        // 처음과 마지막 시간 초기화, 기록 상태 0으로 바꾸기
         setCounterAsZero();
     }
 
+    /* 오늘 달성량 직접 수정 */
     private void setEditButtonListener() {
         recordEditButton.setOnClickListener(v -> {
             String editAmount = recordEditAmount.getText().toString();
@@ -256,8 +259,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /* 현재 날짜를 받아와서 오늘 날짜와 같은지 비교 -> 달라질 때만 기록 바뀜 */
+    /* : 일단 수동으로 날짜 넘기는 버튼을 추가해놓을까 */
+    /* : "이대로 오늘을 마치시겠습니까?" */
+    /* -> 그러면 두구두구둔...! 축하합니다! 레벨업! */
     private void setCompleteButtonListener() {
         completeButton.setOnClickListener(v -> {
+            // 기록 중이었던 경우, 자동으로 정지하기
+            postProcessByState(RecordingState.OFF);
             record.updateGoal();
             showGoalAndIncrement();
             showTodayRecord();

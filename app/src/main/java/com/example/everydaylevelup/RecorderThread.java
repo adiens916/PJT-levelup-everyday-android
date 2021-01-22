@@ -2,10 +2,6 @@ package com.example.everydaylevelup;
 
 import com.example.everydaylevelup.model.RecordingState;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 public class RecorderThread extends Thread {
     MainActivity main;
     RecordingState onRecording;
@@ -51,13 +47,13 @@ public class RecorderThread extends Thread {
 
     private void saveStartValue() {
         // 현재 시간 얻어오기
-        long startTime = Calendar.getInstance().getTimeInMillis();
+        long startTime = System.currentTimeMillis();
         // 현재 시간 저장
         main.record.setStartValue(startTime);
     }
 
     private void saveLastValue() {
-        lastTime = Calendar.getInstance().getTimeInMillis();
+        lastTime = System.currentTimeMillis();
         main.record.setLastValue(lastTime);
     }
 

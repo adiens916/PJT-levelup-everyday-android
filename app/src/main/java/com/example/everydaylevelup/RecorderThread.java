@@ -23,18 +23,20 @@ public class RecorderThread extends Thread {
             onRecording = RecordingState.ON;
         } else {
             saveStartValue();
-            main.showStartTime();
+            main.runOnUiThread(() -> main.showStartTime());
         }
 
         while (onRecording == RecordingState.ON) {
             try {
                 // 마지막 시간 = 항상 현재 시간 가져오기
                 saveLastValue();
-                main.showLastTime();
                 // 기간 = 마지막 시간 - 시작 시간
                 // 달성도도 바로 바로 갱신
                 saveDifference();
-                main.showTodayRecord();
+                main.runOnUiThread(() -> {
+                    main.showLastTime();
+                    main.showTodayRecord();
+                });
                 // 1초마다 반복
                 sleep(1000);
             } catch (InterruptedException e) {

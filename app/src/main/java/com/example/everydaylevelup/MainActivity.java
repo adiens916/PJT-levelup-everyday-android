@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.everydaylevelup.model.RecordingState;
 import com.example.everydaylevelup.model.TimeRecord;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -37,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
     TimeRecord record;
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-    Thread goalTracker;
     RecorderThread progressTracker;
-    String _fileName = "not-to-do";
+    Thread goalTracker;
+    Gson gson;
+    String fileName = "user_record";
 
     // endregion Variables
 
@@ -51,16 +54,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         findViews();
-        // loadData();
-        record = new TimeRecord();
+        loadData();
         checkNewSession();
 
         /* 뷰에 보여주기 */
         showGoalAndIncrement();
         showTodayRecord();
-        showStartTime();
-        showLastTime();
-        changeButtonByState();
+        showCounterByState();
+        showButtonByState();
+
+        if (record.isOnRecording()) {
+            startThreadWithState(RecordingState.CONTINUE);
+        }
 
         /* 버튼 리스너 설정 */
         setStartButtonListener();
@@ -79,13 +84,12 @@ public class MainActivity extends AppCompatActivity {
         /* amount 대신에 value 로 명칭 변경 */
     }
 
+    /* 앱 전환할 때마다 데이터 저장
+    * <- 최근 앱 목록에서 지우면 데이터 날라가기 때문 */
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // saveData();
-
-        // progressWatcher.interrupt();
+    protected void onStop() {
+        super.onStop();
+        saveData();
     }
 
     // endregion onCreate and onDestroy
@@ -111,24 +115,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveData() {
-        SharedPreferences sharedPref = getSharedPreferences(_fileName, 0);
+        // gson.toJson 을 이용해서 클래스 정보를 String 으로 변환해서 저장
+        // 첫 번째 인자 <- 실제로 변경이 되는 클래스 정보
+        // 두 번째 인자 <- 클래스 형식
+        String recordData = gson.toJson(record, TimeRecord.class);
+
+        // String 으로 변환된 클래스를 SharedPreference 에 저장
+        SharedPreferences sharedPref = getSharedPreferences(fileName, 0);
         SharedPreferences.Editor editor = sharedPref.edit();
-
-        String startTime = recordStartButton.getText().toString();
-        editor.putString("startTime", startTime);
-
+        editor.putString("data", recordData);
         // 저장
         editor.apply();
+
+        // Toast.makeText(this, "기록이 저장되었습니다", Toast.LENGTH_SHORT).show();
     }
 
     private void loadData() {
-        
+        // gson 생성
+        gson = new GsonBuilder().create();
 
-        SharedPreferences sharedPref = getSharedPreferences(_fileName, 0);
-        String startTime = sharedPref.getString("startTime", "");
+        // SharedPreferences 안의 데이터 불러오기
+        SharedPreferences sharedPref = getSharedPreferences(fileName, 0);
+        String recordData = sharedPref.getString("data", "");
 
-
-
+        // default 값이 "", 즉 기존 데이터가 없던 경우
+        if (recordData.equals("")) {
+            // 최초로 기록
+            record = new TimeRecord();
+        } else {
+            // 기존 데이터가 있던 경우, 클래스 정보 불러옴
+            record = gson.fromJson(recordData, TimeRecord.class);
+        }
     }
 
     private void checkNewSession() {
@@ -153,6 +170,15 @@ public class MainActivity extends AppCompatActivity {
         todayRecordAmount.setText(asDuration(todayRecordWithDifference));
         double percentage = Math.round(record.getTodayPercentage());
         percentageAmount.setText(String.valueOf(percentage));
+    }
+    
+    private void showCounterByState() {
+        if (record.isOnRecording()) {
+            showStartTime();
+            showLastTime();
+        } else {
+            setCounterAsZero();
+        }
     }
 
     public void showStartTime() {
@@ -201,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     // region View - Button
 
     /* 기록 상태에 따라 버튼 변경 */
-    private void changeButtonByState() {
+    private void showButtonByState() {
         // 현재 기록 중인지 아닌지 따지기
         if (record.isOnRecording()) {
             showCancelButton();
@@ -229,25 +255,30 @@ public class MainActivity extends AppCompatActivity {
     private void setStartButtonListener() {
         recordStartButton.setOnClickListener(v -> {
             // 측정 스레드 시작
-            progressTracker = new RecorderThread(this);
-            progressTracker.start();
-            record.setRecordingState(true);
-            changeButtonByState();
+            startThreadWithState(RecordingState.ON);
         });
+    }
+
+    private void startThreadWithState(RecordingState state) {
+        progressTracker = new RecorderThread(this);
+        progressTracker.setRecordingState(state);
+        progressTracker.start();
+        record.setRecordingState(true);
+        showButtonByState();
     }
 
     private void setCancelButtonListener() {
         recordCancelButton.setOnClickListener(v -> {
             // 재확인 알림창 띄우기 -> 예/아니오 알림 대화상자 처리
-            postProcessByState(RecordingState.CANCEL);
+            finishThreadWithState(RecordingState.CANCEL);
         });
     }
 
     private void setStopButtonListener() {
-        recordStopButton.setOnClickListener(v -> postProcessByState(RecordingState.OFF));
+        recordStopButton.setOnClickListener(v -> finishThreadWithState(RecordingState.OFF));
     }
 
-    private void postProcessByState(RecordingState state) {
+    private void finishThreadWithState(RecordingState state) {
         // 측정 스레드 없을 때의 오류 방지
         if (progressTracker == null) {
             return;
@@ -257,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         progressTracker.interrupt();
         progressTracker = null;
         record.setRecordingState(false);
-        changeButtonByState();
+        showButtonByState();
         showTodayRecord();
         // 처음과 마지막 시간 초기화, 기록 상태 0으로 바꾸기
         setCounterAsZero();
@@ -278,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
     private void setCompleteButtonListener() {
         completeButton.setOnClickListener(v -> {
             // 기록 중이었던 경우, 자동으로 정지하기
-            postProcessByState(RecordingState.OFF);
+            finishThreadWithState(RecordingState.OFF);
             record.updateGoal();
             showGoalAndIncrement();
             showTodayRecord();

@@ -141,16 +141,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void showGoalAndIncrement() {
         long yesterdayGoal = record.getYesterdayGoal();
-        yesterdayGoalViewer.setText(literalAsHMS(yesterdayGoal));
+        yesterdayGoalViewer.setText(asDuration(yesterdayGoal));
         long increment = record.getIncrement();
         incrementViewer.setText(literalAsSignedHMS(increment));
         long todayGoal = record.getTodayGoal();
-        todayGoalViewer.setText(literalAsHMS(todayGoal));
+        todayGoalViewer.setText(asDuration(todayGoal));
     }
 
     public void showTodayRecord() {
         long todayRecordWithDifference = record.getTodayRecord() + record.getDifference();
-        todayRecordAmount.setText(String.valueOf(literalAsHMS(todayRecordWithDifference)));
+        todayRecordAmount.setText(asDuration(todayRecordWithDifference));
         double percentage = Math.round(record.getTodayPercentage());
         percentageAmount.setText(String.valueOf(percentage));
     }
@@ -166,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setCounterAsZero() {
-        startTimeCounter.setText("0");
-        lastTimeCounter.setText("0");
+        startTimeCounter.setText(R.string.zero_of_the_clock);
+        lastTimeCounter.setText(R.string.zero_of_the_clock);
     }
 
     private String literalAsHMS(long dateTime) {
@@ -176,10 +176,24 @@ public class MainActivity extends AppCompatActivity {
 
     private String literalAsSignedHMS(long increment) {
         if (increment < 0) {
-            return "-" + literalAsHMS(Math.abs(increment));
+            return "-" + asDuration(Math.abs(increment));
         } else {
-            return literalAsHMS(increment);
+            return asDuration(increment);
         }
+    }
+
+    /* 실제 기기에서는 (long) 0을 00:00:00이 아니라 09:00:00 (오전 9시)로 표시...
+     * 그런데 현재 시간은 제대로 표시됨
+     * -> 기간만 표시 방식을 따로 만들어야 할 듯 */
+    private String asDuration(long millisecond) {
+        int h, m, s;
+        s = (int) (millisecond / 1000);
+        h = s / 3600;
+        s %= 3600;
+        m = s / 60;
+        s %= 60;
+
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", h, m, s);
     }
 
     // endregion View - Text
@@ -218,21 +232,19 @@ public class MainActivity extends AppCompatActivity {
             progressTracker = new RecorderThread(this);
             progressTracker.start();
             record.setRecordingState(true);
-            showCancelButton();
+            changeButtonByState();
         });
     }
 
     private void setCancelButtonListener() {
         recordCancelButton.setOnClickListener(v -> {
             // 재확인 알림창 띄우기 -> 예/아니오 알림 대화상자 처리
-            postProcessByState(null);
+            postProcessByState(RecordingState.CANCEL);
         });
     }
 
     private void setStopButtonListener() {
-        recordStopButton.setOnClickListener(v -> {
-            postProcessByState(RecordingState.OFF);
-        });
+        recordStopButton.setOnClickListener(v -> postProcessByState(RecordingState.OFF));
     }
 
     private void postProcessByState(RecordingState state) {
@@ -245,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         progressTracker.interrupt();
         progressTracker = null;
         record.setRecordingState(false);
-        showStartButton();
+        changeButtonByState();
         showTodayRecord();
         // 처음과 마지막 시간 초기화, 기록 상태 0으로 바꾸기
         setCounterAsZero();

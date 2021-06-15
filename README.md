@@ -12,6 +12,6 @@ However, its goal (time) increases or decreases by result of the day.
 
 ### Save & Load
 
-User's progress can be saved, of course, and continue even if it is off-screen.
+User's progress can be saved. It continues when it is on-screen.
 
 <img src="https://user-images.githubusercontent.com/59524305/121805944-8130a700-cc88-11eb-881d-a27c8a23b18c.gif" width="35%">
